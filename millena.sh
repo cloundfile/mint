@@ -41,7 +41,7 @@ cmake --build . --config Release
 # Passo 4: Criar pasta de modelos
 # =============================
 echo "[4/7] Criando pasta de modelos..."
-sudo mkdir -p /opt/models
+sudo mkdir -p /opt/models 2>/dev/null || true
 if [ ! -f "$MODEL_PATH" ]; then
     echo "[!] Atenção: coloque o arquivo $MODEL_NAME em /opt/models antes de iniciar o serviço."
 fi
