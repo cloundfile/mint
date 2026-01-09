@@ -4,4 +4,9 @@
 wget -qO install.sh "https://raw.githubusercontent.com/cloundfile/mint/main/install.sh"
 chmod +x install.sh
 ./install.sh
+
+sudo chmod +x millena.sh
+sudo ./millena.sh
+
+
 ```
