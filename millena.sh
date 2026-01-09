@@ -63,6 +63,7 @@ CTX=$CTX_SIZE
 exec "\$BIN" \\
   -m "\$MODEL" \\
   --port "\$PORT" \\
+  --host 0.0.0.0 \\
   --ctx-size "\$CTX" \\
   -t "\$THREADS"
 EOF
