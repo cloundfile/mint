@@ -32,7 +32,7 @@ fi
 # =============================
 echo "[3/7] Compilando llama.cpp..."
 cd "$LLAMA_DIR"
-mkdir -p build
+sudo mkdir -p build
 cd build
 cmake ..
 cmake --build . --config Release
