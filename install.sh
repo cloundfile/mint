@@ -3,9 +3,9 @@
 ### ============================
 ### 0. Instalar OpenJDK 11
 ### ============================
-echo "☕ Instalando OpenJDK 11..."
+echo "☕ Instalando OpenJDK 17..."
 sudo apt update
-sudo apt install -y openjdk-11-jdk
+sudo apt install -y openjdk-17-jdk
 
 # Verifica a instalação do Java
 if java -version &>/dev/null; then
