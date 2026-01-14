@@ -126,6 +126,8 @@ EOF
 chmod +x ~/.local/share/applications/sqldeveloper.desktop
 update-desktop-database ~/.local/share/applications/
 
+rm -f sqldeveloper-24.3.1.347.1826-no-jre.zip
+
 echo "✅ SQL Developer instalado e adicionado ao menu!"
 
 ### ============================
