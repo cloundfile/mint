@@ -1,67 +1,60 @@
+
+
 #!/bin/bash
 
+set -e
+
 ### ============================
-### 0. Instalar OpenJDK 11
+### 0. Instalar OpenJDK 17
 ### ============================
 echo "☕ Instalando OpenJDK 17..."
+
 sudo apt update
 sudo apt install -y openjdk-17-jdk
 
-# Verifica a instalação do Java
 if java -version &>/dev/null; then
-    echo "✅ OpenJDK 11 instalado com sucesso!"
+    echo "✅ OpenJDK 17 instalado com sucesso!"
 else
-    echo "❌ Falha na instalação do OpenJDK 11."
+    echo "❌ Falha na instalação do OpenJDK 17."
     exit 1
 fi
 
 ### ============================
-### 1. Instalação do NVM + Node
+### 1. Instalação do NVM + Node.js
 ### ============================
-
 echo "🚀 Iniciando a instalação do NVM..."
 
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 
-if [ $? -eq 0 ]; then
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+if command -v nvm &>/dev/null; then
     echo "✅ NVM instalado com sucesso!"
 else
-    echo "❌ Houve um erro na instalação do NVM."
+    echo "❌ Erro ao instalar o NVM."
     exit 1
 fi
 
-# Carrega o NVM
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-# Verifica e instala o Node.js se necessário
-if nvm ls node | grep -q 'N/A'; then
+if ! command -v node &>/dev/null; then
     echo "🔧 Node.js não encontrado. Instalando..."
     nvm install node
-    if [ $? -eq 0 ]; then
-        echo "✅ Node.js instalado com sucesso!"
-    else
-        echo "❌ Falha ao instalar o Node.js."
-        exit 1
-    fi
 else
-    echo "✅ Node.js já está instalado:"
-    nvm current
+    echo "✅ Node.js já instalado: $(node -v)"
 fi
 
 ### ============================
 ### 2. Instalação do Postman
 ### ============================
-
 echo "🧪 Verificando instalação do Postman..."
 
-if [ -f "/opt/Postman/Postman" ]; then
-    echo "✅ Postman já está instalado em /opt/Postman"
+if [ -x "/opt/Postman/Postman" ]; then
+    echo "✅ Postman já está instalado."
 else
     echo "⬇️ Instalando Postman..."
 
     wget https://dl.pstmn.io/download/latest/linux_64 -O postman-linux-x64.tar.gz
-    tar -xvzf postman-linux-x64.tar.gz
+    tar -xzf postman-linux-x64.tar.gz
     sudo mv Postman /opt/Postman
     sudo ln -sf /opt/Postman/Postman /usr/bin/postman
 
@@ -74,48 +67,37 @@ Exec=/opt/Postman/Postman
 Icon=/opt/Postman/app/resources/app/assets/icon.png
 Type=Application
 Categories=Development;
+Terminal=false
 EOF
 
     chmod +x ~/.local/share/applications/postman.desktop
     rm -f postman-linux-x64.tar.gz
 
-    echo "✅ Postman instalado com sucesso e adicionado ao menu!"
+    echo "✅ Postman instalado com sucesso!"
 fi
 
 ### ============================
 ### 3. Instalação do SQL Developer
 ### ============================
+echo "⬇️ Instalando SQL Developer..."
 
-echo "⬇️ Baixando SQL Developer..."
-
-wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" \
+wget --no-cookies --no-check-certificate \
+--header "Cookie: oraclelicense=accept-securebackup-cookie" \
 https://download.oracle.com/otn_software/java/sqldeveloper/sqldeveloper-24.3.1.347.1826-no-jre.zip
 
-echo "📦 Extraindo SQL Developer..."
-unzip sqldeveloper-24.3.1.347.1826-no-jre.zip
-
-echo "📁 Movendo para /opt..."
+unzip -q sqldeveloper-24.3.1.347.1826-no-jre.zip
 sudo mv sqldeveloper /opt/
-
-echo "🔐 Dando permissão ao script..."
 sudo chmod +x /opt/sqldeveloper/sqldeveloper.sh
 
-echo "🚀 Executando SQL Developer pela primeira vez..."
-sudo sh /opt/sqldeveloper/sqldeveloper.sh &
+sudo apt install -y tree
 
-echo "🌳 Instalando tree..."
-sudo apt update && sudo apt install -y tree
-
-echo "🔧 Adicionando SQL Developer ao PATH..."
 echo 'export PATH=$PATH:/opt/sqldeveloper' >> ~/.bashrc
-source ~/.bashrc
 
-echo "📂 Criando atalho no menu de aplicativos..."
-mkdir -p ~/.local/share/applications/
+mkdir -p ~/.local/share/applications
 cat <<EOF > ~/.local/share/applications/sqldeveloper.desktop
 [Desktop Entry]
 Name=SQL Developer
-Comment=Ferramenta de Desenvolvimento para Oracle SQL
+Comment=Ferramenta Oracle SQL
 Exec=/opt/sqldeveloper/sqldeveloper.sh
 Icon=/opt/sqldeveloper/icon.png
 Terminal=false
@@ -124,28 +106,24 @@ Categories=Development;Database;
 EOF
 
 chmod +x ~/.local/share/applications/sqldeveloper.desktop
-update-desktop-database ~/.local/share/applications/
+update-desktop-database ~/.local/share/applications
 
 rm -f sqldeveloper-24.3.1.347.1826-no-jre.zip
 
-echo "✅ SQL Developer instalado e adicionado ao menu!"
+echo "✅ SQL Developer instalado com sucesso!"
 
 ### ============================
-### 1. Instalação do android-studio
+### 4. Instalação do Android Studio
 ### ============================
+echo "🚀 Instalando Android Studio..."
 
-echo "🚀 Iniciando a instalação do adbdroid-studio..."
-
-wget -qO- https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2025.2.2.8/android-studio-2025.2.2.8-linux.tar.gz
-tar -xvzf android-studio-2025.2.2.8-linux.tar.gz
+wget https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2025.2.2.8/android-studio-2025.2.2.8-linux.tar.gz
+tar -xzf android-studio-2025.2.2.8-linux.tar.gz
 
 sudo mv android-studio /opt/
-cd /opt/android-studio
+sudo chmod +x /opt/android-studio/bin/studio.sh
 
-sudo chmod +x ./bin/studio.s
-
-
-sudo tee /usr/share/applications/android-studio.desktop > /dev/null <<'EOF'
+sudo tee /usr/share/applications/android-studio.desktop > /dev/null <<EOF
 [Desktop Entry]
 Version=1.0
 Type=Application
@@ -159,11 +137,11 @@ StartupNotify=true
 EOF
 
 sudo chmod +x /usr/share/applications/android-studio.desktop
-update-desktop-database /usr/share/applications
+sudo update-desktop-database /usr/share/applications
+
+echo "✅ Android Studio instalado com sucesso!"
 
 ### ============================
 ### Finalização
 ### ============================
-
-echo "🎉 Todos os componentes foram instalados com sucesso!"
-
+echo "🎉 Ambiente de desenvolvimento configurado com sucesso!"
