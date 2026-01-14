@@ -131,6 +131,37 @@ rm -f sqldeveloper-24.3.1.347.1826-no-jre.zip
 echo "✅ SQL Developer instalado e adicionado ao menu!"
 
 ### ============================
+### 1. Instalação do android-studio
+### ============================
+
+echo "🚀 Iniciando a instalação do adbdroid-studio..."
+
+wget -qO- https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2025.2.2.8/android-studio-2025.2.2.8-linux.tar.gz
+tar -xvzf android-studio-2025.2.2.8-linux.tar.gz
+
+sudo mv android-studio /opt/
+cd /opt/android-studio
+
+sudo chmod +x ./bin/studio.s
+
+
+sudo tee /usr/share/applications/android-studio.desktop > /dev/null <<'EOF'
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Android Studio
+Comment=IDE para desenvolvimento Android
+Exec=/opt/android-studio/bin/studio.sh
+Icon=/opt/android-studio/bin/studio.png
+Terminal=false
+Categories=Development;IDE;
+StartupNotify=true
+EOF
+
+sudo chmod +x /usr/share/applications/android-studio.desktop
+update-desktop-database /usr/share/applications
+
+### ============================
 ### Finalização
 ### ============================
 
